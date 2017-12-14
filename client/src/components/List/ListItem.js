@@ -16,7 +16,7 @@ export const ListItem = props =>
             <h3>{props.title}</h3>
           </a>
           <FormBtn
-            onClick={() => props.saveArticle(props.id)}>
+            onClick={() => props.handleSaveArticle(props.id)}>
             Save Article
           </FormBtn>
         </Col>

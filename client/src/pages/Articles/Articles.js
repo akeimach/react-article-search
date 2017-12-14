@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import DeleteBtn from "../../components/DeleteBtn";
+// import DeleteBtn from "../../components/DeleteBtn";
 import Jumbotron from "../../components/Jumbotron";
 import API from "../../utils/API";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../../components/Grid";
 import { List, ListItem } from "../../components/List";
 import { Input, FormBtn } from "../../components/Form";
@@ -10,16 +10,34 @@ import { Input, FormBtn } from "../../components/Form";
 class Articles extends Component {
   state = {
     articles: [],
+    saved: [],
     searchTerm: "",
     startYear: "",
     endYear: ""
   };
 
   componentDidMount() {
-    this.searchArticles();
-  }
+    this.getArticles();
+  };
 
-  searchArticles = () => {
+  getArticles = () => {
+    API.getArticles()
+    .then(res => {
+      this.setState({ saved: res.data });
+      console.log(this.state.saved);
+    })
+    .catch(err => console.log(err));
+  };
+
+  handleInputChange = event => {
+    const { name, value } = event.target;
+    this.setState({
+      [name]: value
+    });
+  };
+
+  handleSearchArticles = event => {
+    event.preventDefault();
     if (this.state.searchTerm) {
       API.searchArticles({
         searchTerm: this.state.searchTerm,
@@ -34,19 +52,7 @@ class Articles extends Component {
     }
   };
 
-  handleInputChange = event => {
-    const { name, value } = event.target;
-    this.setState({
-      [name]: value
-    });
-  };
-
-  handleFormSubmit = event => {
-    event.preventDefault();
-    this.searchArticles();
-  };
-
-  saveArticle = id => {
+  handleSaveArticle = id => {
     const articleData = this.state.articles.filter(article => article._id === id);
     API.saveArticle({
       title: articleData["0"].headline.main,
@@ -64,32 +70,11 @@ class Articles extends Component {
   //     .catch(err => console.log(err));
   // };
 
-  // loadArticles = () => {
-  //   API.getArticles()
-  //     .then(res =>
-  //       this.setState({ articles: res.data })
-  //     )
-  //     .catch(err => console.log(err));
-  // };
-
-  // handleFormSubmit = event => {
-  //   event.preventDefault();
-  //   if (this.state.searchTerm) {
-  //     API.saveArticle({
-  //       title: this.state.title,
-  //       date: this.state.date,
-  //       url: this.state.url
-  //     })
-  //     .then(res => this.loadArticles())
-  //     .catch(err => console.log(err));
-  //   }
-  // };
-
   render() {
     return (
       <Container fluid>
         <Row>
-          <Col size="md-6">
+          <Col size="md-12">
             <Jumbotron>
               <h1>Search Parameters</h1>
             </Jumbotron>
@@ -120,13 +105,15 @@ class Articles extends Component {
               />
               <FormBtn
                 disabled={!(this.state.searchTerm)}
-                onClick={this.handleFormSubmit}
+                onClick={this.handleSearchArticles}
               >
               Start Search
               </FormBtn>
             </form>
           </Col>
-          <Col size="md-6 sm-12">
+        </Row>
+        <Row>
+          <Col size="md-12">
             <Jumbotron>
               <h1>Search Results</h1>
             </Jumbotron>
@@ -140,7 +127,32 @@ class Articles extends Component {
                       title={article.headline.main}
                       href={article.web_url}
                       date={article.pub_date}
-                      saveArticle={this.saveArticle}
+                      handleSaveArticle={this.handleSaveArticle}
+                    />
+                  );
+                })}
+              </List>
+            ) : (
+              <h3>No Results to Display</h3>
+            )}
+          </Col>
+        </Row>
+        <Row>
+          <Col size="md-12">
+            <Jumbotron>
+              <h1>Saved Articles</h1>
+            </Jumbotron>
+            {this.state.saved.length ? (
+              <List>
+                {this.state.saved.map(article => {
+                  return (
+                    <ListItem
+                      key={article._id}
+                      id={article._id}
+                      title={article.title}
+                      href={article.url}
+                      date={article.date}
+                      // handleDeleteArticle={this.handleDeleteArticle}
                     />
                   );
                 })}

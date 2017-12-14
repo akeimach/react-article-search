@@ -8,18 +8,19 @@ export default {
   searchArticles: function(searchData) {
     return axios.get(`${BASEURL}?q=${searchData.searchTerm}&begin_date=${searchData.startYear || 2017}0101&end_date=${searchData.endYear || 2017}1231&sort=newest&api-key=${APIKEY}`);
   },
-  // Gets all saved articles
-  getArticles: function() {
-    return axios.get("/api/saved");
-  },
   // Saves an article to the database
   saveArticle: function(articleData) {
-    console.log("In API.js");
-    console.log(articleData);
+    console.log("API POST");
     return axios.post("/api/saved", articleData);
+  },
+  // Gets all saved articles
+  getArticles: function() {
+    console.log("API GET");
+    return axios.get("/api/saved");
   },
   // Deletes the article with the given id
   deleteArticle: function(id) {
+    console.log("API DELETE");
     return axios.delete("/api/saved/" + id);
   }
 

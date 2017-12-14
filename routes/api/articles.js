@@ -13,3 +13,11 @@ router.route("/:id")
   .delete(articlesController.remove);
 
 module.exports = router;
+
+
+
+//get all saved articles - 
+    // used by front end to get all articles from mongo database
+// app.get('/api/saved', (req, res) => {
+
+// }

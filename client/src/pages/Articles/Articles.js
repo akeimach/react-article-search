@@ -5,32 +5,33 @@ import API from "../../utils/API";
 import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../../components/Grid";
 import { List, ListItem } from "../../components/List";
-import { Input, TextArea, FormBtn } from "../../components/Form";
+import { Input, FormBtn } from "../../components/Form";
 
 class Articles extends Component {
   state = {
     articles: [],
-    title: "",
-    date: "",
-    url: ""
+    searchTerm: "",
+    startYear: "",
+    endYear: ""
   };
 
   componentDidMount() {
-    this.loadArticles();
+    this.searchArticles();
   }
 
-  loadArticles = () => {
-    API.getArticles()
-      .then(res =>
-        this.setState({ articles: res.data, title: "", date: "", url: "" })
-      )
+  searchArticles = () => {
+    if (this.state.searchTerm) {
+      API.searchArticles({
+        searchTerm: this.state.searchTerm,
+        startYear: this.state.startYear,
+        endYear: this.state.endYear
+      })
+      .then(res => {
+        this.setState({ articles: res.data.response.docs });
+        console.log(res.data.response.docs);
+      })
       .catch(err => console.log(err));
-  };
-
-  deleteArticle = id => {
-    API.deleteArticle(id)
-      .then(res => this.loadArticles())
-      .catch(err => console.log(err));
+    }
   };
 
   handleInputChange = event => {
@@ -42,16 +43,47 @@ class Articles extends Component {
 
   handleFormSubmit = event => {
     event.preventDefault();
-    if (this.state.title && this.state.date) {
-      API.saveArticle({
-        title: this.state.title,
-        date: this.state.date,
-        url: this.state.url
-      })
-        .then(res => this.loadArticles())
-        .catch(err => console.log(err));
-    }
+    this.searchArticles();
   };
+
+  saveArticle = id => {
+    const articleData = this.state.articles.filter(article => article._id === id);
+    API.saveArticle({
+      title: articleData["0"].headline.main,
+      date: articleData["0"].pub_date,
+      url: articleData["0"].web_url
+    })
+    .then(res => console.log("saved", articleData))
+    .catch(err => console.log(err));
+  };
+
+
+  // deleteArticle = id => {
+  //   API.deleteArticle(id)
+  //     .then(res => this.loadArticles())
+  //     .catch(err => console.log(err));
+  // };
+
+  // loadArticles = () => {
+  //   API.getArticles()
+  //     .then(res =>
+  //       this.setState({ articles: res.data })
+  //     )
+  //     .catch(err => console.log(err));
+  // };
+
+  // handleFormSubmit = event => {
+  //   event.preventDefault();
+  //   if (this.state.searchTerm) {
+  //     API.saveArticle({
+  //       title: this.state.title,
+  //       date: this.state.date,
+  //       url: this.state.url
+  //     })
+  //     .then(res => this.loadArticles())
+  //     .catch(err => console.log(err));
+  //   }
+  // };
 
   render() {
     return (
@@ -59,42 +91,59 @@ class Articles extends Component {
         <Row>
           <Col size="md-6">
             <Jumbotron>
-              <h1>What Articles Should I Read?</h1>
+              <h1>Search Parameters</h1>
             </Jumbotron>
             <form>
               <Input
-                value={this.state.title}
+                value={this.state.searchTerm}
                 onChange={this.handleInputChange}
-                name="title"
-                placeholder="Title (required)"
+                name="searchTerm"
+                placeholder="Your search"
+                label="Search Term (required)"
+                type="text"
               />
               <Input
-                value={this.state.date}
+                value={this.state.startYear}
                 onChange={this.handleInputChange}
-                name="date"
-                placeholder="Author (required)"
+                name="startYear"
+                placeholder="YYYY"
+                label="Start Year"
+                type="number"
               />
-              <TextArea
-                value={this.state.url}
+              <Input
+                value={this.state.endYear}
                 onChange={this.handleInputChange}
-                name="url"
-                placeholder="Synopsis (Optional)"
+                name="endYear"
+                placeholder="YYYY"
+                label="End Year"
+                type="number"
               />
               <FormBtn
-                disabled={!(this.state.date && this.state.title)}
+                disabled={!(this.state.searchTerm)}
                 onClick={this.handleFormSubmit}
               >
-                Submit Article
+              Start Search
               </FormBtn>
             </form>
           </Col>
           <Col size="md-6 sm-12">
             <Jumbotron>
-              <h1>Articles On My List</h1>
+              <h1>Search Results</h1>
             </Jumbotron>
             {this.state.articles.length ? (
               <List>
-                
+                {this.state.articles.map(article => {
+                  return (
+                    <ListItem
+                      key={article._id}
+                      id={article._id}
+                      title={article.headline.main}
+                      href={article.web_url}
+                      date={article.pub_date}
+                      saveArticle={this.saveArticle}
+                    />
+                  );
+                })}
               </List>
             ) : (
               <h3>No Results to Display</h3>

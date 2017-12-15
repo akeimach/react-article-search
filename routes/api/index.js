@@ -12,8 +12,8 @@ router.route("/")
 
 // Matches with "/api/saved/:id"
 router.route("/:id")
-  .get(articlesController.findById)
-  .put(articlesController.update)
+  // .get(articlesController.findById)
+  // .put(articlesController.update)
   .delete(articlesController.remove);
 
 module.exports = router;

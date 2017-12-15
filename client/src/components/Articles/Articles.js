@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 // import DeleteBtn from "../../components/DeleteBtn";
-import Jumbotron from "../../components/Jumbotron";
+import Jumbotron from "../Jumbotron";
 import API from "../../utils/API";
 // import { Link } from "react-router-dom";
-import { Col, Row, Container } from "../../components/Grid";
-import { List, ListItem } from "../../components/List";
-import { Input, FormBtn } from "../../components/Form";
+import { Col, Row, Container } from "../Grid";
+import { List, ListItem } from "../List";
+import { Input, FormBtn } from "../Form";
 
 class Articles extends Component {
   state = {

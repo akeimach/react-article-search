@@ -7,7 +7,7 @@ export const ListItem = props =>
   <li className="list-group-item">
     <Container fluid="true">
       <Row fluid="true">
-        <Col size="xs-12 sm-12">
+        <Col size="xs-8 sm-8">
           <a
             rel="noreferrer noopener"
             target="_blank"
@@ -15,9 +15,11 @@ export const ListItem = props =>
           >
             <h3>{props.title}</h3>
           </a>
+        </Col>
+        <Col size="xs-5 sm-4">
           <FormBtn
-            onClick={() => props.handleSaveArticle(props.id)}>
-            Save Article
+            name={props.buttonName}
+            onClick={() => props.handleArticleAction(props.id)}>
           </FormBtn>
         </Col>
       </Row>

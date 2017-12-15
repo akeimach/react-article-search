@@ -1,7 +1,7 @@
 import React from "react";
 import Nav from "./components/Nav";
 import Main from "./components/Main";
-import { Route, Link } from "react-router-dom";
+// import { Route, Link } from "react-router-dom";
 
 const App = () =>
   <div>

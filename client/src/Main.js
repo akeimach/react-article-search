@@ -24,10 +24,7 @@ class Main extends Component {
 
   getArticles = () => {
     API.getArticles()
-    .then(res => {
-      this.setState({ saved: res.data });
-      console.log(this.state.saved);
-    })
+    .then(res => this.setState({ saved: res.data }))
     .catch(err => console.log(err));
   };
 
@@ -46,10 +43,7 @@ class Main extends Component {
         startYear: this.state.startYear,
         endYear: this.state.endYear
       })
-      .then(res => {
-        this.setState({ articles: res.data.response.docs });
-        console.log(res.data.response.docs);
-      })
+      .then(res => this.setState({ articles: res.data.response.docs }))
       .catch(err => console.log(err));
     }
   };

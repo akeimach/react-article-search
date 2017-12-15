@@ -9,17 +9,14 @@ export default {
   },
   // Saves an article to the database
   saveArticle: function(articleData) {
-    console.log("API POST");
     return axios.post("/api/saved", articleData);
   },
   // Gets all saved articles
   getArticles: function() {
-    console.log("API GET");
     return axios.get("/api/saved");
   },
   // Deletes the article with the given id
   deleteArticle: function(id) {
-    console.log("API DELETE");
     return axios.delete("/api/saved/" + id);
   }
 

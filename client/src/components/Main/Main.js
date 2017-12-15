@@ -4,7 +4,7 @@ import Search from "../Search";
 import Results from "../Results";
 import Saved from "../Saved";
 import API from "../../utils/API";
-import { Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 
 
 class Main extends Component {
@@ -52,7 +52,7 @@ class Main extends Component {
             _id: object._id
           }
         });
-        this.setState({ results: formatJson })
+        this.setState({ results: formatJson });
       })
       .catch(err => console.log(err));
     }

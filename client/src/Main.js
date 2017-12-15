@@ -11,7 +11,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 class Main extends Component {
 
   state = {
-    articles: [],
+    results: [],
     saved: [],
     searchTerm: "",
     startYear: "",
@@ -43,18 +43,24 @@ class Main extends Component {
         startYear: this.state.startYear,
         endYear: this.state.endYear
       })
-      .then(res => this.setState({ articles: res.data.response.docs }))
+      .then(res => {
+        // format the json object to normalize with mongo db
+        const formatJson = res.data.response.docs.map(object => {
+          return {
+            title: object.headline.main,
+            date: object.pub_date,
+            url: object.web_url,
+            _id: object._id
+          }
+        });
+        this.setState({ results: formatJson })
+      })
       .catch(err => console.log(err));
     }
   };
 
   handleSaveArticle = id => {
-    const articleData = this.state.articles.filter(article => article._id === id);
-    API.saveArticle({
-      title: articleData["0"].headline.main,
-      date: articleData["0"].pub_date,
-      url: articleData["0"].web_url
-    })
+    API.saveArticle(this.state.results.filter(article => article._id === id))
     .then(res => this.getArticles())
     .catch(err => console.log(err));
   };
@@ -62,8 +68,8 @@ class Main extends Component {
 
   handleRemoveArticle = id => {
     API.deleteArticle(id)
-      .then(res => this.getArticles())
-      .catch(err => console.log(err));
+    .then(res => this.getArticles())
+    .catch(err => console.log(err));
   };
 
   render() {
@@ -86,16 +92,16 @@ class Main extends Component {
             <Row>
               <Col size="md-12">
                 <Results
-                  articles={this.state.articles}
-                  handleArticleAction={this.handleSaveArticle}
+                  results={this.state.results}
+                  handleSaveArticle={this.handleSaveArticle}
                 />
               </Col>
             </Row>
             <Row>
               <Col size="md-12">
                 <Saved
-                  articles={this.state.saved}
-                  handleArticleAction={this.handleRemoveArticle}
+                  saved={this.state.saved}
+                  handleRemoveArticle={this.handleRemoveArticle}
                 />
               </Col>
             </Row>

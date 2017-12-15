@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import Nav from "./components/Nav";
-import { Col, Row, Container } from "./components/Grid";
-import Search from "./components/Search";
-import Results from "./components/Results";
-import Saved from "./components/Saved";
-import API from "./utils/API";
-import { BrowserRouter as Router } from "react-router-dom";
+import Nav from "../Nav";
+import { Col, Row, Container } from "../Grid";
+import Search from "../Search";
+import Results from "../Results";
+import Saved from "../Saved";
+import API from "../../utils/API";
+import { Route, Link } from "react-router-dom";
 
 
 class Main extends Component {
@@ -74,40 +74,40 @@ class Main extends Component {
 
   render() {
     return (
-      <Router>
-        <div>
-          <Nav />
-          <Container fluid>
-            <Row>
-              <Col size="md-12">
-                <Search
-                  searchTerm={this.state.searchTerm}
-                  startYear={this.state.startYear}
-                  endYear={this.state.endYear}
-                  handleInputChange={this.handleInputChange}
-                  handleSearchArticles={this.handleSearchArticles}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col size="md-12">
-                <Results
-                  results={this.state.results}
-                  handleSaveArticle={this.handleSaveArticle}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col size="md-12">
-                <Saved
-                  saved={this.state.saved}
-                  handleRemoveArticle={this.handleRemoveArticle}
-                />
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      </Router>
+      <div>
+        <Nav />
+        <Container fluid>
+          <Row>
+            <Col size="md-12">
+              <Link to="/search">
+              <Search
+                searchTerm={this.state.searchTerm}
+                startYear={this.state.startYear}
+                endYear={this.state.endYear}
+                handleInputChange={this.handleInputChange}
+                handleSearchArticles={this.handleSearchArticles}
+              />
+              </Link>
+            </Col>
+          </Row>
+          <Row>
+            <Col size="md-12">
+              <Results
+                results={this.state.results}
+                handleSaveArticle={this.handleSaveArticle}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col size="md-12">
+              <Saved
+                saved={this.state.saved}
+                handleRemoveArticle={this.handleRemoveArticle}
+              />
+            </Col>
+          </Row>
+        </Container>
+      </div>
     );
   }
 }
